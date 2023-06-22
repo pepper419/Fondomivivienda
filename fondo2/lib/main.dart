@@ -106,6 +106,7 @@ class _HomePageState extends State<HomePage> {
     double VAN=Saldo_inicial;
     //double cuotaMensual = (montoPrestamo * tasaInteresMensual) / (1 - math.pow(1 + tasaInteresMensual, -plazoPrestamo));
 
+    //SUMAMOS LA TASA CONVERTIDA A EFECTIVA CON LA TASA DE DESGRAVAMEN
 
 
     int plazo = int.parse(plazo2Controller.text);
@@ -126,20 +127,21 @@ class _HomePageState extends State<HomePage> {
         Saldo_inicial=saldo;
 
       double intereses = Saldo_inicial * tasaInteresMensual;
-      double cuotaMensual = plazo > i ? 0.0 : saldoesta * ((tasaInteresMensual*math.pow(1+tasaInteresMensual,plazoPrestamo- estatic +1)) /
-          (math.pow(1+tasaInteresMensual,plazoPrestamo - estatic +1 )-1));
+      double cuotaMensual = plazo > i ? 0.0 : saldoesta * (((tasaInteresMensual+Seg_Des)*math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo- estatic +1)) /
+          (math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo - estatic +1 )-1));
       double amortizacion =  cuotaMensual - intereses;
       if (i < plazo) {
         saldoesta -= amortizacion ;
         estatic++;
       }
-
-      saldo = plazo > i ? saldo + intereses : saldo - amortizacion  ;
-      double amortizacionValue = plazo > i ? 0.0 : amortizacion;
-       double periodo = i+1;
-      DateTime fechaPago = DateTime.now().add(Duration(days: i * 30)); // Ejemplo: fecha de pago cada 30 días
       //GASTOS
       double PerSeg_Des=Seg_Des*Saldo_inicial;
+      double amortizacionValue = plazo > i ? 0.0 : amortizacion - PerSeg_Des;
+      saldo = plazo > i ? saldo + intereses : Saldo_inicial - amortizacionValue  ;
+
+       double periodo = i+1;
+      DateTime fechaPago = DateTime.now().add(Duration(days: i * 30)); // Ejemplo: fecha de pago cada 30 días
+
       //FLUJO
       flujo= PerSeg_Des+seg_riesgo+comision+portes+gastos_admi+cuotaMensual;
       //VAN
