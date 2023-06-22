@@ -213,16 +213,17 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             SizedBox(height: 20.0),
                             DropdownButtonFormField<String>(
-                              value: selectedMonto,
+                              value: montoController.text,
                               decoration: InputDecoration(labelText: 'Elegir monto'),
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  selectedMonto = newValue;
+                                  montoController.text = newValue ?? '';
                                 });
                               },
                               items: montoOptions.map((option) {
+                                final String value = option['value']?.toString() ?? '';
                                 return DropdownMenuItem<String>(
-                                  value: option['value']?.toString(),
+                                  value: value,
                                   child: Row(
                                     children: [
                                       if (option['image'] != null) ...[
@@ -235,11 +236,11 @@ class _HomePageState extends State<HomePage> {
                                       ],
                                       Text(option['label']),
                                       SizedBox(width: 10.0),
-                                      Text(option['value']?.toString() ?? ''),
+                                      Text(value),
                                     ],
                                   ),
                                 );
-                              }).toList(),
+                              }).toSet().toList(), // Utilizamos toSet() para eliminar duplicados
                             ),
                             if (selectedMonto == null) ...[
                               SizedBox(height: 10.0),
