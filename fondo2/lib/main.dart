@@ -41,8 +41,7 @@ class _HomePageState extends State<HomePage> {
     {"label": "Casa 1", "value": 200000, "image": "assets/casa1.png"},
     {"label": "Casa 2", "value": 320000, "image": "assets/casa2.png"},
     {"label": "Casa 3", "value": 512000, "image": "assets/casa3.png"},
-    {"label": "Casa 4", "value": 240560, "image": "assets/casa4.png"},
-    {"label": "Otro monto", "value": null, "image": null},
+    {"label": "Casa 4", "value": 240560, "image": "assets/casa4.png"}
   ];
 
   String? selectedMonto;
@@ -215,37 +214,45 @@ class _HomePageState extends State<HomePage> {
                               onChanged: (String? newValue) {
                                 setState(() {
                                   selectedMonto = newValue;
+                                  if (newValue == 'Otro monto') {
+                                    montoController.clear();
+                                  } else {
+                                    montoController.text = newValue ?? '';
+                                  }
                                 });
                               },
                               items: [
                                 ...montoOptions.map((option) {
-                                  final String value = option['value']?.toString() ?? '';
+                                  final String label = option['label'];
+                                  final String? value = option['value']?.toString();
+                                  final String? image = option['image'];
+
                                   return DropdownMenuItem<String>(
-                                    value: value,
+                                    value: value ?? '',
                                     child: Row(
                                       children: [
-                                        if (option['image'] != null) ...[
+                                        if (image != null) ...[
                                           Image.asset(
-                                            option['image'],
+                                            image,
                                             width: 40.0,
                                             height: 40.0,
                                           ),
                                           SizedBox(width: 10.0),
                                         ],
-                                        Text(option['label']),
+                                        Text(label),
                                         SizedBox(width: 10.0),
-                                        Text(value),
+                                        Text(value ?? ''),
                                       ],
                                     ),
                                   );
                                 }).toList(),
                                 DropdownMenuItem<String>(
-                                  value: 'otro',
+                                  value: 'Otro monto',
                                   child: Text('Otro monto'),
                                 ),
                               ],
                             ),
-                            if (selectedMonto == 'otro') ...[
+                            if (selectedMonto == 'Otro monto') ...[
                               SizedBox(height: 10.0),
                               TextField(
                                 controller: montoController,
