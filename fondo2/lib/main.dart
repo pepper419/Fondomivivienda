@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
     descuento = double.parse(montoController.text) * double.parse(porcentajeController.text) / 100;
     double saldoesta = montoPrestamo - descuento ;
     int plazoPrestamo = int.parse(plazoController.text)*12;
-    double tasaInteresMensual = (math.pow(1 + (tasaInteresAnual/100), 1/12) - 1);
+    double tasaInteresMensual = (tasa==1) ? (math.pow(1 + (tasaInteresAnual/100), 1/12) - 1) : (math.pow(1 + (tasaInteresAnual/100)/360, 30) - 1);
     //double tasaInteresMensual = tasaInteresAnual / 12 / 100;
     double saldo = 0.0;
     //saldo inicial
@@ -100,6 +100,8 @@ class _HomePageState extends State<HomePage> {
     double gastos_admi= double.parse(gastosadmiController.text);
     //FLUJO
     double flujo= 0;
+    //COK
+    num cok= math.pow(1+ double.parse(cokController.text)/100, 30/360) -1;
 
     //double cuotaMensual = (montoPrestamo * tasaInteresMensual) / (1 - math.pow(1 + tasaInteresMensual, -plazoPrestamo));
 
