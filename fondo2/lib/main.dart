@@ -37,6 +37,15 @@ class CronogramaPago {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Map<String, dynamic>> montoOptions = [
+    {"label": "Casa 1", "value": 200000, "image": "assets/casa1.png"},
+    {"label": "Casa 2", "value": 320000, "image": "assets/casa2.png"},
+    {"label": "Casa 3", "value": 512000, "image": "assets/casa3.png"},
+    {"label": "Casa 4", "value": 240560, "image": "assets/casa4.png"},
+    {"label": "Otro monto", "value": null, "image": null},
+  ];
+
+  String? selectedMonto;
   String _selectedTasa = 'Tasa Efectiva';
   int tasa = 1;
   final TextEditingController montoController = TextEditingController();
@@ -195,10 +204,42 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           children: [
                             SizedBox(height: 20.0),
-                            TextField(
-                              controller: montoController,
-                              decoration: InputDecoration(labelText: 'Monto del préstamo'),
+                            DropdownButtonFormField<String>(
+                              value: selectedMonto,
+                              decoration: InputDecoration(labelText: 'Elegir monto'),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedMonto = newValue;
+                                });
+                              },
+                              items: montoOptions.map((option) {
+                                return DropdownMenuItem<String>(
+                                  value: option['value']?.toString(),
+                                  child: Row(
+                                    children: [
+                                      if (option['image'] != null) ...[
+                                        Image.asset(
+                                          option['image'],
+                                          width: 40.0,
+                                          height: 40.0,
+                                        ),
+                                        SizedBox(width: 10.0),
+                                      ],
+                                      Text(option['label']),
+                                      SizedBox(width: 10.0),
+                                      Text(option['value']?.toString() ?? ''),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
                             ),
+                            if (selectedMonto == null) ...[
+                              SizedBox(height: 10.0),
+                              TextField(
+                                controller: montoController,
+                                decoration: InputDecoration(labelText: 'Monto del préstamo'),
+                              ),
+                            ],
                             TextField(
                               controller: porcentajeController,
                               decoration: InputDecoration(labelText: 'Porcentaje de cuota inicial'),
