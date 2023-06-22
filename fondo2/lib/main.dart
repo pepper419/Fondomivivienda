@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-void main() => runApp(FondoMiviviendaApp());
+import 'entrada.dart';
+
+void main() => runApp(EntradaApp());
 
 class FondoMiviviendaApp extends StatelessWidget {
   @override
@@ -11,11 +13,18 @@ class FondoMiviviendaApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
       home: HomePage(),
+      routes: {
+        '/entrada': (context) => EntradaScreen(),
+      },
+      onUnknownRoute: (settings) {
+        // Aquí puedes manejar rutas desconocidas o mostrar una pantalla de error
+      },
     );
   }
 }
 
 class HomePage extends StatefulWidget {
+  static const routeName = '/home';
   @override
   _HomePageState createState() => _HomePageState();
 }

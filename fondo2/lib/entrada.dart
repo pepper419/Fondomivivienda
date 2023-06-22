@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'entradaLogueado.dart';
+import 'main.dart';
 import 'registro.dart';
 import 'login.dart';
 
@@ -11,10 +13,12 @@ class EntradaApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: 'Montserrat', // Fuente personalizada
+        fontFamily: 'Montserrat',
       ),
       home: EntradaScreen(),
       routes: {
+        '/home': (ctx) => HomePage(),
+        '/entradaLogueado': (ctx) => EntradaLogueadoScreen(nombre: '',),
         RegistroScreen.routeName: (ctx) => RegistroScreen(),
         LoginScreen.routeName: (ctx) => LoginScreen(),
       },
