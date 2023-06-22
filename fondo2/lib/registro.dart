@@ -73,7 +73,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
 
     await box.close();
 
-    Navigator.of(context).pushNamed(EntradaLogueadoScreen.routeName);
+    Navigator.of(context).pushNamed(EntradaLogueadoScreen.routeName,arguments: nombre);
   }
 
   @override

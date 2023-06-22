@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
       double intereses = Saldo_inicial * tasaInteresMensual;
       double cuotaMensual = plazo > i ? 0.0 : saldoesta * (((tasaInteresMensual+Seg_Des)*math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo- estatic +1)) /
           (math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo - estatic +1 )-1));
-      double amortizacion =  cuotaMensual - intereses;
+      double amortizacion =  cuotaMensual - intereses ;
       if (i < plazo) {
         saldoesta -= amortizacion ;
         estatic++;

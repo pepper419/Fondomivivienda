@@ -11,6 +11,7 @@ class EntradaLogueadoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final nombre = ModalRoute.of(context)!.settings.arguments as String;
     return LayoutBuilder(
       builder: (context, constraints) {
         return Scaffold(
