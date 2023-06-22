@@ -37,7 +37,8 @@ class CronogramaPago {
 }
 
 class _HomePageState extends State<HomePage> {
-
+  String _selectedTasa = 'Tasa Efectiva';
+  int tasa = 1;
   final TextEditingController montoController = TextEditingController();
   final TextEditingController tasaController = TextEditingController();
   final TextEditingController plazoController = TextEditingController();
@@ -180,64 +181,131 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Ingrese los datos para generar el cronograma de pagos:',
-                style: TextStyle(fontSize: 18.0),
-              ),
-              SizedBox(height: 20.0),
-              TextField(
-                controller: montoController,
-                decoration: InputDecoration(labelText: 'Monto del préstamo')
-              ),
-              TextField(
-                  controller: porcentajeController,
-                  decoration: InputDecoration(labelText: 'Porcentaje de cuota incial'),
-              ),
               Row(
                 children: [
-                  Text('Porcentaje de cuota inicial: '),
-                  Text((montoController.text.isNotEmpty && porcentajeController.text.isNotEmpty)
-                      ? (double.parse(montoController.text) * double.parse(porcentajeController.text) / 100).toStringAsFixed(2)
-                      : '0.00'),
+                  Expanded(
+                    flex: 1,
+                    child: Card(
+                      color: Colors.green.withOpacity(0.2),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 86.0,
+                        ),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 20.0),
+                            TextField(
+                              controller: montoController,
+                              decoration: InputDecoration(labelText: 'Monto del préstamo'),
+                            ),
+                            TextField(
+                              controller: porcentajeController,
+                              decoration: InputDecoration(labelText: 'Porcentaje de cuota inicial'),
+                            ),
+                            Row(
+                              children: [
+                                Text('Porcentaje de cuota inicial: '),
+                                Text((montoController.text.isNotEmpty && porcentajeController.text.isNotEmpty)
+                                    ? (double.parse(montoController.text) * double.parse(porcentajeController.text) / 100).toStringAsFixed(2)
+                                    : '0.00'),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10.0),
+                  Expanded(
+                    flex: 1,
+                    child: Card(
+                      color: Colors.green.withOpacity(0.2),
+                      child: Container(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text('Seleccionar tasa:'),
+                                    SizedBox(width: 10),
+                                    DropdownButton<String>(
+                                      value: _selectedTasa,
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          _selectedTasa = newValue!;
+                                          tasa = (_selectedTasa == 'Tasa Efectiva') ? 1 : 2;
+                                        });
+                                      },
+                                      items: <String>['Tasa Efectiva', 'Tasa Nominal']
+                                          .map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ],
+                                ),
+                                TextField(
+                                  controller: tasaController,
+                                  decoration: InputDecoration(
+                                    labelText: 'Tasa de interés $_selectedTasa',
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10.0),
+                            TextField(
+                              controller: plazoController,
+                              decoration: InputDecoration(labelText: 'Plazo del préstamo (años)'),
+                            ),
+                            TextField(
+                              controller: plazo2Controller,
+                              decoration: InputDecoration(labelText: 'Plazo de gracia total'),
+                            ),
+                            TextField(
+                              controller: desgravamenController,
+                              decoration: InputDecoration(labelText: 'Porcentaje de Seguro desgravamen'),
+                            ),
+                            TextField(
+                              controller: seguro_riesgoController,
+                              decoration: InputDecoration(labelText: 'Porcentaje de Seguro de riesgo'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-              SizedBox(height: 10.0),
-              TextField(
-                controller: tasaController,
-                decoration: InputDecoration(labelText: 'Tasa de interés anual'),
-              ),
-              SizedBox(height: 10.0),
-              TextField(
-                controller: plazoController,
-                decoration: InputDecoration(labelText: 'Plazo del préstamo (años)'),
-              ),
-              TextField(
-                controller: plazo2Controller,
-                decoration: InputDecoration(labelText: 'Plazo de gracia total'),
-              ),
-              TextField(
-                controller: desgravamenController,
-                decoration: InputDecoration(labelText: 'Porcentaje de Seguro desgravamen'),
-              ),
-              TextField(
-                controller: seguro_riesgoController,
-                decoration: InputDecoration(labelText: 'Porcentaje de Seguro de riesgo'),
-              ),
-              TextField(
-                controller: comisionController,
-                decoration: InputDecoration(labelText: 'Comision'),
-              ),
-              TextField(
-                controller: portesController,
-                decoration: InputDecoration(labelText: 'Portes'),
-              ),
-              TextField(
-                controller: gastosadmiController,
-                decoration: InputDecoration(labelText: 'Gastos administrativos'),
-              ),
-              TextField(
-                controller: cokController,
-                decoration: InputDecoration(labelText: '%COK'),
+              Card(
+                color: Colors.green.withOpacity(0.2),
+                child: Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: comisionController,
+                        decoration: InputDecoration(labelText: 'Comisión'),
+                      ),
+                      TextField(
+                        controller: portesController,
+                        decoration: InputDecoration(labelText: 'Portes'),
+                      ),
+                      TextField(
+                        controller: gastosadmiController,
+                        decoration: InputDecoration(labelText: 'Gastos administrativos'),
+                      ),
+                      TextField(
+                        controller: cokController,
+                        decoration: InputDecoration(labelText: '%COK'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(height: 20.0),
               Row(
