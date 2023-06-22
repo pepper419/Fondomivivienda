@@ -207,36 +207,42 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             SizedBox(height: 20.0),
                             DropdownButtonFormField<String>(
-                              value: montoController.text,
+                              value: selectedMonto,
                               decoration: InputDecoration(labelText: 'Elegir monto'),
                               onChanged: (String? newValue) {
                                 setState(() {
-                                  montoController.text = newValue ?? '';
+                                  selectedMonto = newValue;
                                 });
                               },
-                              items: montoOptions.map((option) {
-                                final String value = option['value']?.toString() ?? '';
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Row(
-                                    children: [
-                                      if (option['image'] != null) ...[
-                                        Image.asset(
-                                          option['image'],
-                                          width: 40.0,
-                                          height: 40.0,
-                                        ),
+                              items: [
+                                ...montoOptions.map((option) {
+                                  final String value = option['value']?.toString() ?? '';
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Row(
+                                      children: [
+                                        if (option['image'] != null) ...[
+                                          Image.asset(
+                                            option['image'],
+                                            width: 40.0,
+                                            height: 40.0,
+                                          ),
+                                          SizedBox(width: 10.0),
+                                        ],
+                                        Text(option['label']),
                                         SizedBox(width: 10.0),
+                                        Text(value),
                                       ],
-                                      Text(option['label']),
-                                      SizedBox(width: 10.0),
-                                      Text(value),
-                                    ],
-                                  ),
-                                );
-                              }).toSet().toList(), // Utilizamos toSet() para eliminar duplicados
+                                    ),
+                                  );
+                                }).toList(),
+                                DropdownMenuItem<String>(
+                                  value: 'otro',
+                                  child: Text('Otro monto'),
+                                ),
+                              ],
                             ),
-                            if (selectedMonto == null) ...[
+                            if (selectedMonto == 'otro') ...[
                               SizedBox(height: 10.0),
                               TextField(
                                 controller: montoController,
