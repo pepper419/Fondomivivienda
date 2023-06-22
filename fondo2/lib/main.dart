@@ -102,6 +102,8 @@ class _HomePageState extends State<HomePage> {
     //COK
     num cok= math.pow(1+ double.parse(cokController.text)/100, 30/360) -1;
     double PorcentajeCOK=cok.toDouble();
+    //VAN
+    double VAN=Saldo_inicial;
     //double cuotaMensual = (montoPrestamo * tasaInteresMensual) / (1 - math.pow(1 + tasaInteresMensual, -plazoPrestamo));
 
 
@@ -123,7 +125,7 @@ class _HomePageState extends State<HomePage> {
       else
         Saldo_inicial=saldo;
 
-      double intereses = saldo * tasaInteresMensual;
+      double intereses = Saldo_inicial * tasaInteresMensual;
       double cuotaMensual = plazo > i ? 0.0 : saldoesta * ((tasaInteresMensual*math.pow(1+tasaInteresMensual,plazoPrestamo- estatic +1)) /
           (math.pow(1+tasaInteresMensual,plazoPrestamo - estatic +1 )-1));
       double amortizacion =  cuotaMensual - intereses;
@@ -140,6 +142,8 @@ class _HomePageState extends State<HomePage> {
       double PerSeg_Des=Seg_Des*Saldo_inicial;
       //FLUJO
       flujo= PerSeg_Des+seg_riesgo+comision+portes+gastos_admi+cuotaMensual;
+      //VAN
+      VAN+=flujo/(math.pow(1+PorcentajeCOK, estatic));
       DataRow row = DataRow(
         cells: [
           DataCell(Text(periodo.toString())),
