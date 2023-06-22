@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
     double saldo = 0.0;
     saldo = saldoesta;
 
-
+    double Seg_Des = double.parse(desgravamenController.text)/100;
     //double cuotaMensual = (montoPrestamo * tasaInteresMensual) / (1 - math.pow(1 + tasaInteresMensual, -plazoPrestamo));
 
 
@@ -99,6 +99,7 @@ class _HomePageState extends State<HomePage> {
           DataCell(Text(intereses.toStringAsFixed(2))),
           DataCell(Text(amortizacionValue.toStringAsFixed(2))),
           DataCell(Text(saldo.toStringAsFixed(2))),
+          DataCell(Text(Seg_Des.toStringAsFixed(2))),
         ],
       );
       pagosRows.add(row);
@@ -192,7 +193,8 @@ class _HomePageState extends State<HomePage> {
                   DataColumn(label: Text('Cuota')),
                   DataColumn(label: Text('Intereses')),
                   DataColumn(label: Text('Amortización')),
-                  DataColumn(label: Text('Nuevo Saldo Pendiente')),
+                  DataColumn(label: Text('Saldo Final')),
+                  DataColumn(label: Text('Seg. Desgrav.')),
                 ],
                 rows: pagosRows,
               ),
