@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
     //SEGURO DE DESGRAVAMEN
     double Seg_Des = double.parse(desgravamenController.text)/100;
     //Seguro de riesgo
-    double seg_riesgo= (double.parse(seguro_riesgoController.text)/100)* double.parse(montoController.text)/12 ;
+    double seg_riesgo= double.parse(seguro_riesgoController.text)* double.parse(montoController.text)/12 ;
     //Comision
     double comision= double.parse(comisionController.text);
     //Portes
@@ -102,8 +102,6 @@ class _HomePageState extends State<HomePage> {
     double flujo= 0;
     //COK
     num cok= math.pow(1+ double.parse(cokController.text)/100, 30/360) -1;
-    double PorcentajeCOK=cok.toDouble();
-    double VAN=Saldo_inicial;
 
     //double cuotaMensual = (montoPrestamo * tasaInteresMensual) / (1 - math.pow(1 + tasaInteresMensual, -plazoPrestamo));
 
@@ -117,7 +115,14 @@ class _HomePageState extends State<HomePage> {
 
 
     for (int i = 0; i < plazoPrestamo; i++) {
-
+      double intereses = saldo * tasaInteresMensual;
+      double cuotaMensual = plazo > i ? 0.0 : saldoesta * ((tasaInteresMensual*math.pow(1+tasaInteresMensual,plazoPrestamo- estatic +1)) /
+                            (math.pow(1+tasaInteresMensual,plazoPrestamo - estatic +1 )-1));
+      double amortizacion =  cuotaMensual - intereses;
+      if (i < plazo) {
+        saldoesta -= amortizacion ;
+        estatic++;
+      }
       if( plazo>i)
         {
           if(i>0 && Saldo_inicial<saldo)
@@ -125,16 +130,6 @@ class _HomePageState extends State<HomePage> {
         }
       else
         Saldo_inicial=saldo;
-
-      double intereses = Saldo_inicial * tasaInteresMensual;
-      double cuotaMensual = plazo > i ? 0.0 : Saldo_inicial * ((tasaInteresMensual*math.pow(1+tasaInteresMensual,plazoPrestamo- estatic +1)) /
-          (math.pow(1+tasaInteresMensual,plazoPrestamo - estatic +1 )-1));
-      double amortizacion =  cuotaMensual - intereses;
-      if (i < plazo) {
-        saldoesta -= amortizacion ;
-        estatic++;
-      }
-
       saldo = plazo > i ? saldo + intereses : saldo - amortizacion  ;
       double amortizacionValue = plazo > i ? 0.0 : amortizacion;
        double periodo = i+1;
@@ -143,7 +138,6 @@ class _HomePageState extends State<HomePage> {
       double PerSeg_Des=Seg_Des*Saldo_inicial;
       //FLUJO
       flujo= PerSeg_Des+seg_riesgo+comision+portes+gastos_admi+cuotaMensual;
-      VAN-=flujo/math.pow(1+PorcentajeCOK, estatic);
       DataRow row = DataRow(
         cells: [
           DataCell(Text(periodo.toString())),
