@@ -1,8 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:flutter/widgets.dart';
 import 'entradaLogueado.dart';
+import 'package:hive/hive.dart';
+
+@HiveType(typeId: 0)
+class Usuario {
+  @HiveField(0)
+  final String nombre;
+  @HiveField(1)
+  final String correo;
+  @HiveField(2)
+  final String contrasena;
+
+  Usuario({
+    required this.nombre,
+    required this.correo,
+    required this.contrasena,
+  });
+}
+
+
+
+@HiveType(typeId: 1) // Agrega esta anotación para el adaptador
+
+class UsuarioAdapter extends TypeAdapter<Usuario> {
+  @override
+  final int typeId = 0;
+
+  @override
+  Usuario read(BinaryReader reader) {
+    return Usuario(
+      nombre: reader.readString(),
+      correo: reader.readString(),
+      contrasena: reader.readString(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Usuario obj) {
+    writer.writeString(obj.nombre);
+    writer.writeString(obj.correo);
+    writer.writeString(obj.contrasena);
+  }
+}
 
 class RegistroScreen extends StatefulWidget {
   static const routeName = '/registro';
@@ -22,26 +62,18 @@ class _RegistroScreenState extends State<RegistroScreen> {
     final correo = _correoController.text;
     final contrasena = _contrasenaController.text;
 
-    // Crea la base de datos o abre la existente
-    final database = await openDatabase(
-      join(await getDatabasesPath(), 'usuarios.db'),
-      onCreate: (db, version) {
-        return db.execute(
-          'CREATE TABLE usuarios(id INTEGER PRIMARY KEY AUTOINCREMENT, nombre TEXT, correo TEXT, contrasena TEXT)',
-        );
-      },
-      version: 1,
+    Hive.registerAdapter<Usuario>(UsuarioAdapter());
+    final box = await Hive.openBox<Usuario>('usuarios');
+    final usuario = Usuario(
+      nombre: nombre,
+      correo: correo,
+      contrasena: contrasena,
     );
+    await box.add(usuario);
 
-    // Inserta el usuario en la base de datos
-    await database.insert(
-      'usuarios',
-      {'nombre': nombre, 'correo': correo, 'contrasena': contrasena},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await box.close();
 
     Navigator.of(context).pushNamed(EntradaLogueadoScreen.routeName);
-
   }
 
   @override
@@ -55,7 +87,8 @@ class _RegistroScreenState extends State<RegistroScreen> {
           image: DecorationImage(
             image: AssetImage('assets/imglog.png'),
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(Colors.green.withOpacity(0.4), BlendMode.dstATop),
+            colorFilter:
+            ColorFilter.mode(Colors.green.withOpacity(0.4), BlendMode.dstATop),
           ),
         ),
         child: Padding(
@@ -73,76 +106,69 @@ class _RegistroScreenState extends State<RegistroScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-              Card(
-                elevation: 4, // Añade una sombra al card
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Borde redondeado
-                ),
-                color: Colors.lightGreen.withOpacity(0.5), // Color verde claro transparente
-                child: InkWell(
-                  onTap: () {
-                    // Acción al hacer clic en el card
-                  },
-                  borderRadius: BorderRadius.circular(10), // Borde redondeado para el efecto hover
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 200.0),
-                          child: TextFormField(
-                            controller: _nombreController,
-                            decoration: InputDecoration(labelText: 'Nombre'),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Ingrese su nombre';
-                              }
-                              return null;
-                            },
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  color: Colors.lightGreen.withOpacity(0.5),
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: BorderRadius.circular(10),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 200.0),
+                            child: TextFormField(
+                              controller: _nombreController,
+                              decoration: InputDecoration(labelText: 'Nombre'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Ingrese su nombre';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 200.0),
-                          child: TextFormField(
-                            controller: _correoController,
-                            decoration: InputDecoration(labelText: 'Correo'),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Ingrese su correo';
-                              }
-                              return null;
-                            },
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 200.0),
+                            child: TextFormField(
+                              controller: _correoController,
+                              decoration: InputDecoration(labelText: 'Correo'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Ingrese su correo';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 200.0),
-                          child: TextFormField(
-                            controller: _contrasenaController,
-                            decoration: InputDecoration(labelText: 'Contraseña'),
-                            obscureText: true,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Ingrese su contraseña';
-                              }
-                              return null;
-                            },
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 200.0),
+                            child: TextFormField(
+                              controller: _contrasenaController,
+                              decoration: InputDecoration(labelText: 'Contraseña'),
+                              obscureText: true,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Ingrese su contraseña';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      Builder(
-                        builder: (context) {
-                          _guardarUsuario(context);
-                          return SizedBox.shrink(); // Opcionalmente, puedes retornar un widget invisible aquí
-                        },
-                      );
+                      _guardarUsuario(context);
                     }
                   },
                   child: Text('Registrarte'),
