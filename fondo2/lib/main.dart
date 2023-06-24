@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'entrada.dart';
 
-void main() => runApp(EntradaApp());
+void main() => runApp(FondoMiviviendaApp());
 
 class FondoMiviviendaApp extends StatelessWidget {
   @override
@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
   String? selectedMonto;
   String _selectedTasa = 'Tasa Efectiva';
   int tasa = 1;
+  int top = 1;
   final TextEditingController montoController = TextEditingController();
   final TextEditingController tasaController = TextEditingController();
   final TextEditingController plazoController = TextEditingController();
@@ -337,9 +338,31 @@ class _HomePageState extends State<HomePage> {
                               controller: plazoController,
                               decoration: InputDecoration(labelText: 'Plazo del préstamo (años)'),
                             ),
+                            DropdownButtonFormField<String>(
+                              value: top == 1 ? 'Total' : 'Parcial',
+                              decoration: InputDecoration(labelText: 'Tipo de plazo de gracia'),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  top = newValue == 'Total' ? 1 : 2;
+                                });
+                              },
+                              items: [
+                                DropdownMenuItem<String>(
+                                  value: 'Total',
+                                  child: Text('Total'),
+                                ),
+                                DropdownMenuItem<String>(
+                                  value: 'Parcial',
+                                  child: Text('Parcial'),
+                                ),
+                              ],
+                            ),
                             TextField(
                               controller: plazo2Controller,
-                              decoration: InputDecoration(labelText: 'Plazo de gracia total'),
+                              enabled: top == 2, // Only enable the field if "Parcial" is selected
+                              decoration: InputDecoration(
+                                labelText: 'Plazo de gracia $top',
+                              ),
                             ),
                             TextField(
                               controller: desgravamenController,
