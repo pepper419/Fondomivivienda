@@ -359,7 +359,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                             TextField(
                               controller: plazo2Controller,
-                              enabled: top == 2, // Only enable the field if "Parcial" is selected
                               decoration: InputDecoration(
                                 labelText: 'Plazo de gracia $top',
                               ),
