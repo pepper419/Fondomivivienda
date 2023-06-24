@@ -36,7 +36,7 @@ class CronogramaPago {
   final double amortizacion;
   final double saldoPendiente;
 
-  CronogramaPago({
+   CronogramaPago({
     required this.fecha,
     required this.cuota,
     required this.intereses,
