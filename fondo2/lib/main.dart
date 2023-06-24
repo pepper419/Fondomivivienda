@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
     //double tasaInteresMensual = tasaInteresAnual / 12 / 100;
     double saldo = 0.0;
     //saldo inicial
-    double Saldo_inicial=saldoesta;
+    double Saldo_inicial=montoPrestamo - descuento ;
     saldo = saldoesta;
     //SEGURO DE DESGRAVAMEN
     double Seg_Des = double.parse(desgravamenController.text)/100;
@@ -116,8 +116,9 @@ class _HomePageState extends State<HomePage> {
     double VAN=Saldo_inicial;
     //double cuotaMensual = (montoPrestamo * tasaInteresMensual) / (1 - math.pow(1 + tasaInteresMensual, -plazoPrestamo));
 
-    //SUMAMOS LA TASA CONVERTIDA A EFECTIVA CON LA TASA DE DESGRAVAMEN
-
+    //CUOTA MENSUAL
+    double cuotaMensual=0;
+    //SALDO FINAL
 
     int plazo = int.parse(plazo2Controller.text);
 
@@ -128,17 +129,21 @@ class _HomePageState extends State<HomePage> {
 
     for (int i = 0; i < plazoPrestamo; i++) {
 
-      if( plazo>i)
-        {
-          if(i>0 && Saldo_inicial<saldo)
-            Saldo_inicial= saldo;
-        }
-      else
-        Saldo_inicial=saldo;
-
+      //SALDO INICIAL
+      Saldo_inicial= saldo;
+      //INTERESES
       double intereses = Saldo_inicial * tasaInteresMensual;
-      double cuotaMensual = plazo > i ? 0.0 : saldoesta * (((tasaInteresMensual+Seg_Des)*math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo- estatic +1)) /
-          (math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo - estatic +1 )-1));
+      //CUOTA MENSUAL
+      if(top==1)
+      {
+         cuotaMensual = plazo > i ? 0.0 : saldoesta * (((tasaInteresMensual+Seg_Des)*math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo- estatic +1)) /
+            (math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo - estatic +1 )-1));
+      }
+      else
+        cuotaMensual = plazo > i ? intereses : saldoesta * (((tasaInteresMensual+Seg_Des)*math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo- estatic +1)) /
+            (math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo - estatic +1 )-1));
+
+      //AMORTIZACION
       double amortizacion =  cuotaMensual - intereses ;
       if (i < plazo) {
         saldoesta -= amortizacion ;
@@ -147,7 +152,10 @@ class _HomePageState extends State<HomePage> {
       //GASTOS
       double PerSeg_Des=Seg_Des*Saldo_inicial;
       double amortizacionValue = plazo > i ? 0.0 : amortizacion - PerSeg_Des;
-      saldo = plazo > i ? saldo + intereses : Saldo_inicial - amortizacionValue  ;
+      if(top==1)
+      saldo = plazo > i ? Saldo_inicial + intereses : Saldo_inicial - amortizacionValue  ;
+      else
+        saldo = plazo > i ? Saldo_inicial: Saldo_inicial - amortizacionValue  ;
 
        double periodo = i+1;
       DateTime fechaPago = DateTime.now().add(Duration(days: i * 30)); // Ejemplo: fecha de pago cada 30 días
