@@ -153,7 +153,7 @@ class _HomePageState extends State<HomePage> {
       DateTime fechaPago = DateTime.now().add(Duration(days: i * 30)); // Ejemplo: fecha de pago cada 30 días
 
       //FLUJO
-      flujo= PerSeg_Des+seg_riesgo+comision+portes+gastos_admi+cuotaMensual;
+      flujo= plazo > i ? PerSeg_Des+seg_riesgo+comision+portes+gastos_admi+cuotaMensual:seg_riesgo+comision+portes+gastos_admi+cuotaMensual;
       //VAN
       VAN+=flujo/(math.pow(1+PorcentajeCOK, estatic));
       DataRow row = DataRow(
