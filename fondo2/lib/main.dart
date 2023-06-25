@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -118,9 +120,11 @@ class _HomePageState extends State<HomePage> {
 
     //CUOTA MENSUAL
     double cuotaMensual=0;
-    //SALDO FINAL
-
+    //Cantidada de plazos de gracia
     int plazo = int.parse(plazo2Controller.text);
+    //CALCULO DE TIR
+    List<double> tir=[];
+    double tasaTIR =0.1;
 
 
 
@@ -162,6 +166,8 @@ class _HomePageState extends State<HomePage> {
 
       //FLUJO
       flujo= plazo > i ? PerSeg_Des+seg_riesgo+comision+portes+gastos_admi+cuotaMensual:seg_riesgo+comision+portes+gastos_admi+cuotaMensual;
+      //Añadir el flujo a la lista de TIR
+      tir.add(flujo);
       //VAN
       VAN+=flujo/(math.pow(1+PorcentajeCOK, estatic));
       DataRow row = DataRow(
@@ -186,6 +192,39 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       resultado = 'Cronograma de pagos';
     });
+  }
+
+  double calcularTIR(List<double> flujosEfectivo, double tasaDescuento) {
+    double tir = 0.0;
+    double epsilon = 0.0001; // Valor de tolerancia para el cálculo
+
+    // Función interna para calcular el valor presente neto (VPN) de los flujos de efectivo
+    double calcularVPN(double tasa) {
+      double vpn = 0.0;
+      for (int i = 0; i < flujosEfectivo.length; i++) {
+        vpn += flujosEfectivo[i] / math.pow(1 + tasa, i);
+      }
+      return vpn;
+    }
+
+    // Función interna para iterar y aproximar la TIR mediante el método de Newton-Raphson
+    double calcularAproxTIR() {
+      double tirAprox = 0.1; // Valor de partida para la aproximación
+      double vpn = calcularVPN(tirAprox);
+
+      while (vpn.abs() > epsilon) {
+        double derivada = (calcularVPN(tirAprox + epsilon) - vpn) / epsilon;
+        tirAprox = tirAprox - vpn / derivada;
+        vpn = calcularVPN(tirAprox);
+      }
+
+      return tirAprox;
+    }
+
+    // Llamada a la función de aproximación de la TIR
+    tir = calcularAproxTIR();
+
+    return tir;
   }
 
   void limpiarCampos() {
