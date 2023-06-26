@@ -2,16 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'entradaLogueado.dart';
 import 'package:hive/hive.dart';
+import 'entradaLogueado.dart';
 
-class Usuario {
-  final String nombre;
-  final String contrasena;
-
-  Usuario({
-    required this.nombre,
-    required this.contrasena,
-  });
-}
+import 'registro.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -25,43 +18,53 @@ class _LoginScreenState extends State<LoginScreen> {
   final _nombreController = TextEditingController();
   final _contrasenaController = TextEditingController();
 
-  Future<void> _verificarUsuario(BuildContext context) async {
+  Future<void> _iniciarSesion(BuildContext context) async {
     final nombre = _nombreController.text;
     final contrasena = _contrasenaController.text;
 
-    // Open the Hive box for users
-    final box = await Hive.openBox('usuarios');
+    try {
+      final box = await Hive.openBox<Usuario>('usuarios');
+      final List<Usuario> usuarios = box.values.toList();
 
-    // Get the user object from Hive box
-    final usuario = box.values.firstWhere(
-          (user) => user.nombre == nombre && user.contrasena == contrasena,
-      orElse: () => null,
-    );
+      final Usuario usuarioEncontrado = usuarios.firstWhere(
+            (usuario) => usuario.nombre == nombre && usuario.contrasena == contrasena,
+        orElse: () => throw Exception('Credenciales incorrectas'),
+      );
 
-    if (usuario != null) {
-      // Usuario autenticado correctamente
-      Navigator.of(context).pushNamed(
-        EntradaLogueadoScreen.routeName,
-        arguments: {'nombre': usuario.nombre},
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text('Error de inicio de sesión'),
-          content: Text('El usuario o la contraseña son incorrectos.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text('Aceptar'),
-            ),
-          ],
-        ),
-      );
+      await box.close();
+
+      if (usuarioEncontrado != null) {
+        Navigator.of(context).pushNamed(
+          EntradaLogueadoScreen.routeName,
+          arguments: {
+            'nombre': usuarioEncontrado.nombre,
+            'dni': usuarioEncontrado.dni,
+            'correo': usuarioEncontrado.correo,
+            'telefono': usuarioEncontrado.telefono,
+            'ruc': usuarioEncontrado.ruc,
+          },
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Inicio de sesión fallido'),
+            content: Text('Usuario o contraseña incorrectos.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text('Aceptar'),
+              ),
+            ],
+          ),
+        );
+      }
     }
-
-    // Close the Hive box
-    await box.close();
+    catch (e) {
+      print('Error al abrir o cerrar la caja de Hive: $e');
+      // Puedes mostrar una notificación o un diálogo de error aquí si lo deseas
+      return;
+    }
   }
 
   @override
@@ -75,8 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
           image: DecorationImage(
             image: AssetImage('assets/imglog.png'),
             fit: BoxFit.cover,
-            colorFilter:
-            ColorFilter.mode(Colors.green.withOpacity(0.4), BlendMode.dstATop),
+            colorFilter: ColorFilter.mode(
+              Colors.green.withOpacity(0.4),
+              BlendMode.dstATop,
+            ),
           ),
         ),
         child: Padding(
@@ -86,6 +91,13 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Hero(
+                  tag: 'logo',
+                  child: Image.asset(
+                    'assets/logo.png',
+                    height: 150,
+                  ),
+                ),
                 SizedBox(height: 20),
                 Card(
                   elevation: 4,
@@ -93,38 +105,42 @@ class _LoginScreenState extends State<LoginScreen> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   color: Colors.lightGreen.withOpacity(0.5),
-                  child: Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 200.0),
-                          child: TextFormField(
-                            controller: _nombreController,
-                            decoration: InputDecoration(labelText: 'Nombre'),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Ingrese su nombre';
-                              }
-                              return null;
-                            },
+                  child: InkWell(
+                    onTap: () {},
+                    borderRadius: BorderRadius.circular(10),
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 200.0),
+                            child: TextFormField(
+                              controller: _nombreController,
+                              decoration: InputDecoration(labelText: 'Nombre'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Ingrese su nombre';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 200.0),
-                          child: TextFormField(
-                            controller: _contrasenaController,
-                            decoration: InputDecoration(labelText: 'Contraseña'),
-                            obscureText: true,
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Ingrese su contraseña';
-                              }
-                              return null;
-                            },
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 200.0),
+                            child: TextFormField(
+                              controller: _contrasenaController,
+                              decoration: InputDecoration(labelText: 'Contraseña'),
+                              obscureText: true,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Ingrese su contraseña';
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -132,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      _verificarUsuario(context);
+                      _iniciarSesion(context);
                     }
                   },
                   child: Text('Ingresar'),

@@ -18,7 +18,13 @@ class EntradaApp extends StatelessWidget {
       home: EntradaScreen(),
       routes: {
         '/home': (ctx) => HomePage(),
-        '/entradaLogueado': (ctx) => EntradaLogueadoScreen(nombre: '',),
+        '/entradaLogueado': (ctx) => EntradaLogueadoScreen(
+          nombre: '',
+          dni: '',
+          correo: '',
+          telefono: '',
+          ruc: '',
+        ),
         RegistroScreen.routeName: (ctx) => RegistroScreen(),
         LoginScreen.routeName: (ctx) => LoginScreen(),
       },

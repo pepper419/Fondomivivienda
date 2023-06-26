@@ -5,8 +5,8 @@ import 'dart:math' as math;
 
 import 'entrada.dart';
 
-//void main() => runApp(EntradaApp());
-void main() => runApp(FondoMiviviendaApp());
+void main() => runApp(EntradaApp());
+//void main() => runApp(FondoMiviviendaApp());
 
 class FondoMiviviendaApp extends StatelessWidget {
   @override
@@ -54,10 +54,10 @@ class CronogramaPago {
 class _HomePageState extends State<HomePage> {
 
   List<Map<String, dynamic>> montoOptions = [
-    {"label": "Casa 1", "value": 200000, "image": "assets/casa1.png"},
-    {"label": "Casa 2", "value": 320000, "image": "assets/casa2.png"},
-    {"label": "Casa 3", "value": 512000, "image": "assets/casa3.png"},
-    {"label": "Casa 4", "value": 240560, "image": "assets/casa4.png"}
+    {"label": "Casa Personal", "value": 160000, "image": "assets/casa1.png"},
+    {"label": "Casa para 2 personas", "value": 210000, "image": "assets/casa2.png"},
+    {"label": "Casa para 3 personas", "value": 326000, "image": "assets/casa3.png"},
+    {"label": "Casa Familiar", "value": 512560, "image": "assets/casa4.png"}
   ];
 
   String? selectedMonto;

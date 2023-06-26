@@ -44,6 +44,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.0.4
   hive_generator: ^2.0.0
+  hive_flutter: ^1.1.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -68,6 +69,9 @@ flutter:
     - assets/casa2.png
     - assets/casa3.png
     - assets/casa4.png
+    - assets/billetesoles.png
+    - assets/billetedolares.png
+    - assets/casaicon.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

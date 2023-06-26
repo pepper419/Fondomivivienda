@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'entradaLogueado.dart';
 import 'package:hive/hive.dart';
 
@@ -11,18 +12,24 @@ class Usuario {
   final String correo;
   @HiveField(2)
   final String contrasena;
+  @HiveField(3)
+  final String ruc;
+  @HiveField(4)
+  final String dni;
+  @HiveField(5)
+  final String telefono;
 
   Usuario({
     required this.nombre,
     required this.correo,
     required this.contrasena,
+    required this.ruc,
+    required this.dni,
+    required this.telefono,
   });
 }
 
-
-
-@HiveType(typeId: 1) // Agrega esta anotación para el adaptador
-
+@HiveType(typeId: 1)
 class UsuarioAdapter extends TypeAdapter<Usuario> {
   @override
   final int typeId = 0;
@@ -33,6 +40,9 @@ class UsuarioAdapter extends TypeAdapter<Usuario> {
       nombre: reader.readString(),
       correo: reader.readString(),
       contrasena: reader.readString(),
+      ruc: reader.readString(),
+      dni: reader.readString(),
+      telefono: reader.readString(),
     );
   }
 
@@ -41,6 +51,9 @@ class UsuarioAdapter extends TypeAdapter<Usuario> {
     writer.writeString(obj.nombre);
     writer.writeString(obj.correo);
     writer.writeString(obj.contrasena);
+    writer.writeString(obj.ruc);
+    writer.writeString(obj.dni);
+    writer.writeString(obj.telefono);
   }
 }
 
@@ -56,24 +69,49 @@ class _RegistroScreenState extends State<RegistroScreen> {
   final _nombreController = TextEditingController();
   final _correoController = TextEditingController();
   final _contrasenaController = TextEditingController();
+  final _rucController = TextEditingController();
+  final _dniController = TextEditingController();
+  final _telefonoController = TextEditingController();
 
   Future<void> _guardarUsuario(BuildContext context) async {
     final nombre = _nombreController.text;
     final correo = _correoController.text;
     final contrasena = _contrasenaController.text;
+    final ruc = _rucController.text;
+    final dni = _dniController.text;
+    final telefono = _telefonoController.text;
 
     Hive.registerAdapter<Usuario>(UsuarioAdapter());
-    final box = await Hive.openBox<Usuario>('usuarios');
-    final usuario = Usuario(
-      nombre: nombre,
-      correo: correo,
-      contrasena: contrasena,
+
+    try {
+      final box = await Hive.openBox<Usuario>('usuarios');
+      final usuario = Usuario(
+        nombre: nombre,
+        correo: correo,
+        contrasena: contrasena,
+        ruc: ruc,
+        dni: dni,
+        telefono: telefono,
+      );
+      await box.add(usuario);
+      await box.close();
+    } catch (e) {
+      print('Error al abrir o cerrar la caja de Hive: $e');
+      // Puedes mostrar una notificación o un diálogo de error aquí si lo deseas
+      return;
+    }
+
+    Navigator.pushNamed(
+      context,
+      EntradaLogueadoScreen.routeName,
+      arguments: {
+        'nombre': nombre,
+        'dni': dni,
+        'correo': correo,
+        'telefono': telefono,
+        'ruc': ruc,
+      },
     );
-    await box.add(usuario);
-
-    await box.close();
-
-    Navigator.of(context).pushNamed(EntradaLogueadoScreen.routeName,arguments: nombre);
   }
 
   @override
@@ -154,6 +192,45 @@ class _RegistroScreenState extends State<RegistroScreen> {
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Ingrese su contraseña';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 200.0),
+                            child: TextFormField(
+                              controller: _rucController,
+                              decoration: InputDecoration(labelText: 'RUC'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Ingrese su RUC';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 200.0),
+                            child: TextFormField(
+                              controller: _dniController,
+                              decoration: InputDecoration(labelText: 'DNI'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Ingrese su DNI';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 200.0),
+                            child: TextFormField(
+                              controller: _telefonoController,
+                              decoration: InputDecoration(labelText: 'Teléfono'),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Ingrese su teléfono';
                                 }
                                 return null;
                               },
