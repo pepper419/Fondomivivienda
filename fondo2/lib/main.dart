@@ -8,6 +8,8 @@ import 'entrada.dart';
 void main() => runApp(EntradaApp());
 //void main() => runApp(FondoMiviviendaApp());
 
+
+
 class FondoMiviviendaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -53,17 +55,22 @@ class CronogramaPago {
 
 class _HomePageState extends State<HomePage> {
 
+
+
+  String? selectedMonto;
+  String _selectedTasa = 'Tasa Efectiva';
+  int tasa = 1;
+  int top = 1;
+  String moneda = "S/.";
+  bool esDolares = false;
+
+
   List<Map<String, dynamic>> montoOptions = [
     {"label": "Casa Personal", "value": 160000, "image": "assets/casa1.png"},
     {"label": "Casa para 2 personas", "value": 210000, "image": "assets/casa2.png"},
     {"label": "Casa para 3 personas", "value": 326000, "image": "assets/casa3.png"},
     {"label": "Casa Familiar", "value": 512560, "image": "assets/casa4.png"}
   ];
-
-  String? selectedMonto;
-  String _selectedTasa = 'Tasa Efectiva';
-  int tasa = 1;
-  int top = 1;
   final TextEditingController montoController = TextEditingController();
   final TextEditingController tasaController = TextEditingController();
   final TextEditingController plazoController = TextEditingController();
@@ -180,17 +187,17 @@ class _HomePageState extends State<HomePage> {
         cells: [
           DataCell(Text(periodo.toString())),
           DataCell(Text(fechaPago.toString())),
-          DataCell(Text(Saldo_inicial.toStringAsFixed(2))),
-          DataCell(Text(intereses.toStringAsFixed(2))),
-          DataCell(Text(cuotaMensual.toStringAsFixed(2))),
-          DataCell(Text(amortizacionValue.toStringAsFixed(2))),
-          DataCell(Text(PerSeg_Des.toStringAsFixed(2))),
-          DataCell(Text(seg_riesgo.toStringAsFixed(2))),
-          DataCell(Text(comision.toStringAsFixed(2))),
-          DataCell(Text(portes.toStringAsFixed(2))),
-          DataCell(Text(gastos_admi.toStringAsFixed(2))),
-          DataCell(Text(saldo.toStringAsFixed(2))),
-          DataCell(Text(flujo.toStringAsFixed(2))),
+          DataCell(Text(moneda+Saldo_inicial.toStringAsFixed(2))),
+          DataCell(Text(moneda+intereses.toStringAsFixed(2))),
+          DataCell(Text(moneda+cuotaMensual.toStringAsFixed(2))),
+          DataCell(Text(moneda+amortizacionValue.toStringAsFixed(2))),
+          DataCell(Text(moneda+PerSeg_Des.toStringAsFixed(2))),
+          DataCell(Text(moneda+seg_riesgo.toStringAsFixed(2))),
+          DataCell(Text(moneda+comision.toStringAsFixed(2))),
+          DataCell(Text(moneda+portes.toStringAsFixed(2))),
+          DataCell(Text(moneda+gastos_admi.toStringAsFixed(2))),
+          DataCell(Text(moneda+saldo.toStringAsFixed(2))),
+          DataCell(Text(moneda+flujo.toStringAsFixed(2))),
         ],
       );
       pagosRows.add(row);
@@ -262,6 +269,20 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Switch(
+                value: esDolares,
+                onChanged: (value) {
+                  setState(() {
+                    esDolares = value;
+                    moneda = esDolares ? "\$" : "S/.";
+                  });
+                },
+              ),
+              Image.asset(
+                esDolares ? 'assets/billetedolares.png' : 'assets/billetesoles.png',
+                width: 100,
+                height: 100,
+              ),
               Row(
                 children: [
                   Expanded(
@@ -480,7 +501,7 @@ class _HomePageState extends State<HomePage> {
               Text(resultado),
               DataTable(
                 columns: [
-                  DataColumn(label: Text('Periodo')),
+                  DataColumn(label: Text('Periodo'),),
                   DataColumn(label: Text('Fecha')),
                   DataColumn(label: Text('Saldo Inicial')),
                   DataColumn(label: Text('Intereses')),
@@ -494,6 +515,7 @@ class _HomePageState extends State<HomePage> {
                   DataColumn(label: Text('Saldo Final')),
                   DataColumn(label: Text('Flujo')),
                 ],
+
                 rows: pagosRows,
               ),
             ],

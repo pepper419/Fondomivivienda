@@ -96,16 +96,16 @@ class EntradaLogueadoScreen extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               buildHouseItem(
-                                  'Casa Personal', 'Valor: \$160,000', 'assets/casa1.png'),
+                                  'Casa Personal', '1 cuarto, 1 cocina , 1 baño y 1 comedor', 'assets/casa1.png'),
                               SizedBox(height: 7),
                               buildHouseItem('Casa para 2 personas',
-                                  'Valor: \$210,000', 'assets/casa2.png'),
+                                  '2 cuarto, 1 cocina , 1 baño y 1 comedor', 'assets/casa2.png'),
                               SizedBox(height: 7),
                               buildHouseItem('Casa para 3 personas',
-                                  'Valor: \$326,000', 'assets/casa3.png'),
+                                  '3 cuarto, 1 cocina , 2 baño, 1 sala familiar y 1 comedor', 'assets/casa3.png'),
                               SizedBox(height: 7),
                               buildHouseItem(
-                                  'Casa Familiar', 'Valor: \$512,560', 'assets/casa4.png'),
+                                  'Casa Familiar', '4 cuarto, 1 cocina , 3 baño, 1 sala familiar y 1 comedor', 'assets/casa4.png'),
                             ],
                           ),
                           actions: <Widget>[
