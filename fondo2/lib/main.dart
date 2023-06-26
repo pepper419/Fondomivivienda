@@ -81,41 +81,9 @@ class _HomePageState extends State<HomePage> {
 
   String resultado = '';
 
-  void showResumen(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Resumen'),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Monto préstamo: ${montoController.text}'),
-              Text('Tasa de Interés: ${tasaController.text}'),
-              Text('Plazo (en años): ${plazoController.text}'),
-              Text('Porcentaje: ${porcentajeController.text}'),
-              Text('Seguro Desgravamen: ${desgravamenController.text}'),
-              Text('Seguro de Riesgo: ${seguro_riesgoController.text}'),
-              Text('Comisión: ${comisionController.text}'),
-              Text('Portes: ${portesController.text}'),
-              Text('Gastos Administrativos: ${gastosadmiController.text}'),
-              Text('COK: ${cokController.text}'),
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cerrar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+   double VAN=0;
+  List<double> tir=[];
+  double tasaTIR =0.1;
   void calcularCronograma() {
 
 
@@ -151,7 +119,7 @@ class _HomePageState extends State<HomePage> {
     num cok= math.pow(1+ double.parse(cokController.text)/100, 30/360) -1;
     double PorcentajeCOK=cok.toDouble();
     //VAN
-    double VAN=Saldo_inicial;
+
     //double cuotaMensual = (montoPrestamo * tasaInteresMensual) / (1 - math.pow(1 + tasaInteresMensual, -plazoPrestamo));
 
     //CUOTA MENSUAL
@@ -159,8 +127,8 @@ class _HomePageState extends State<HomePage> {
     //Cantidada de plazos de gracia
     int plazo = int.parse(plazo2Controller.text);
     //CALCULO DE TIR
-    List<double> tir=[];
-    double tasaTIR =0.1;
+
+
 
 
 
@@ -205,7 +173,7 @@ class _HomePageState extends State<HomePage> {
       //Añadir el flujo a la lista de TIR
       tir.add(flujo);
       //VAN
-      VAN+=flujo/(math.pow(1+PorcentajeCOK, estatic));
+      VAN+=flujo/(math.pow(1+PorcentajeCOK, i+1));
       DataRow row = DataRow(
         cells: [
           DataCell(Text(periodo.toString())),
@@ -230,37 +198,67 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  double calcularTIR(List<double> flujosEfectivo, double tasaDescuento) {
-    double tir = 0.0;
-    double epsilon = 0.0001; // Valor de tolerancia para el cálculo
+  double calculateTir(List<double> cashFlows) {
 
-    // Función interna para calcular el valor presente neto (VPN) de los flujos de efectivo
-    double calcularVPN(double tasa) {
-      double vpn = 0.0;
-      for (int i = 0; i < flujosEfectivo.length; i++) {
-        vpn += flujosEfectivo[i] / math.pow(1 + tasa, i);
+   const max= 10000;
+    const precision= 0.00001;
+
+    double TIR = 0;
+    double TIRPREVIO=0;
+
+    for( int i =0; i <max; i++)
+      {
+        double van=0;
+        double derivadavan=0;
+
+        for(int j=0;j<cashFlows.length;j++)
+          {
+            van+=cashFlows[i]/math.pow(1+TIR, i);
+            derivadavan-= i*cashFlows[i]/math.pow(1+TIR, i+1);
+          }
+        if(van.abs()< precision) {
+          return TIR;
+        }
+
+        double ajuste= van/derivadavan;
+        TIRPREVIO=TIR;
+        TIR-=ajuste;
+
       }
-      return vpn;
-    }
+    return 0;
 
-    // Función interna para iterar y aproximar la TIR mediante el método de Newton-Raphson
-    double calcularAproxTIR() {
-      double tirAprox = 0.1; // Valor de partida para la aproximación
-      double vpn = calcularVPN(tirAprox);
 
-      while (vpn.abs() > epsilon) {
-        double derivada = (calcularVPN(tirAprox + epsilon) - vpn) / epsilon;
-        tirAprox = tirAprox - vpn / derivada;
-        vpn = calcularVPN(tirAprox);
-      }
+  }
 
-      return tirAprox;
-    }
+  void showResumen(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Resumen'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Monto préstamo: ${montoController.text}'),
+              Text('Tasa de Interés: ${tasaController.text}'),
+              Text('Plazo (en años): ${plazoController.text}'),
+              Text('VAN: ${((double.parse(montoController.text)-descuento) - VAN).toStringAsFixed(2)}'),
+              Text('TIR: ${calculateTir(tir)*0.000000000000000000001}'),
 
-    // Llamada a la función de aproximación de la TIR
-    tir = calcularAproxTIR();
-
-    return tir;
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cerrar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void limpiarCampos() {
