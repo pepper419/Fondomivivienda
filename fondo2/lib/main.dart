@@ -24,12 +24,14 @@ class FondoMiviviendaApp extends StatelessWidget {
       },
     );
   }
+
 }
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
   @override
   _HomePageState createState() => _HomePageState();
+
 }
 
 class CronogramaPago {
@@ -46,9 +48,11 @@ class CronogramaPago {
     required this.amortizacion,
     required this.saldoPendiente,
   });
+
 }
 
 class _HomePageState extends State<HomePage> {
+
   List<Map<String, dynamic>> montoOptions = [
     {"label": "Casa 1", "value": 200000, "image": "assets/casa1.png"},
     {"label": "Casa 2", "value": 320000, "image": "assets/casa2.png"},
@@ -75,9 +79,7 @@ class _HomePageState extends State<HomePage> {
   double descuento = 0.0;
 
   List<DataRow> pagosRows = [];
-
    int estatic = 1;
-
 
   String resultado = '';
 
@@ -198,37 +200,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  double calculateTir(List<double> cashFlows) {
 
-   const max= 10000;
-    const precision= 0.00001;
-
-    double TIR = 0;
-    double TIRPREVIO=0;
-
-    for( int i =0; i <max; i++)
-      {
-        double van=0;
-        double derivadavan=0;
-
-        for(int j=0;j<cashFlows.length;j++)
-          {
-            van+=cashFlows[i]/math.pow(1+TIR, i);
-            derivadavan-= i*cashFlows[i]/math.pow(1+TIR, i+1);
-          }
-        if(van.abs()< precision) {
-          return TIR;
-        }
-
-        double ajuste= van/derivadavan;
-        TIRPREVIO=TIR;
-        TIR-=ajuste;
-
-      }
-    return 0;
-
-
-  }
 
   void showResumen(BuildContext context) {
     showDialog(
@@ -244,7 +216,6 @@ class _HomePageState extends State<HomePage> {
               Text('Tasa de Interés: ${tasaController.text}'),
               Text('Plazo (en años): ${plazoController.text}'),
               Text('VAN: ${((double.parse(montoController.text)-descuento) - VAN).toStringAsFixed(2)}'),
-              Text('TIR: ${calculateTir(tir)*0.000000000000000000001}'),
 
             ],
           ),
