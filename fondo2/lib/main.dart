@@ -1,10 +1,11 @@
-import 'dart:ffi';
+
 
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 import 'entrada.dart';
 
+//void main() => runApp(EntradaApp());
 void main() => runApp(FondoMiviviendaApp());
 
 class FondoMiviviendaApp extends StatelessWidget {
@@ -79,6 +80,41 @@ class _HomePageState extends State<HomePage> {
 
 
   String resultado = '';
+
+  void showResumen(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Resumen'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Monto préstamo: ${montoController.text}'),
+              Text('Tasa de Interés: ${tasaController.text}'),
+              Text('Plazo (en años): ${plazoController.text}'),
+              Text('Porcentaje: ${porcentajeController.text}'),
+              Text('Seguro Desgravamen: ${desgravamenController.text}'),
+              Text('Seguro de Riesgo: ${seguro_riesgoController.text}'),
+              Text('Comisión: ${comisionController.text}'),
+              Text('Portes: ${portesController.text}'),
+              Text('Gastos Administrativos: ${gastosadmiController.text}'),
+              Text('COK: ${cokController.text}'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cerrar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void calcularCronograma() {
 
@@ -462,6 +498,12 @@ class _HomePageState extends State<HomePage> {
                   ElevatedButton(
                     onPressed: calcularCronograma,
                     child: Text('Generar Cronograma'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      showResumen(context);
+                    },
+                    child: Text('Resumen'),
                   ),
                 ],
               ),

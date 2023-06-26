@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'main.dart';
 
-
 class EntradaLogueadoScreen extends StatelessWidget {
   static const routeName = '/entradaLogueado';
   final String nombre;
@@ -11,7 +10,6 @@ class EntradaLogueadoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nombre = ModalRoute.of(context)!.settings.arguments as String;
     return LayoutBuilder(
       builder: (context, constraints) {
         return Scaffold(
@@ -19,7 +17,7 @@ class EntradaLogueadoScreen extends StatelessWidget {
             title: Text('Bienvenido $nombre'),
           ),
           body: Container(
-            constraints: BoxConstraints.expand(), // Establece el tamaño máximo
+            constraints: BoxConstraints.expand(),
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/img4.png'),
