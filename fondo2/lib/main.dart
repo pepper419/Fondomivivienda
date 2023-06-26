@@ -94,8 +94,7 @@ class _HomePageState extends State<HomePage> {
   List<double> tir=[];
   double tasaTIR =0.1;
   void calcularCronograma() {
-
-
+    VAN=0;
 
     //Es el periodo en el que se estan calculando las cuotas y va aumentando para recorrer todo el plazo de pagos
     estatic = 1;
