@@ -218,11 +218,11 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Monto préstamo: ${montoController.text}'),
-              Text('Tasa de Interés: ${tasaController.text}'),
-              Text('Plazo (en años): ${plazoController.text}'),
+              Text('Monto préstamo: ${moneda} ${montoController.text}'),
+              Text('Tasa de Interés:  ${tasaController.text}%'),
+              Text('Plazo (en años):  ${plazoController.text}'),
               Text('COK: ${(PorcentajeCOK*100).toStringAsFixed(5)}%'),
-              Text('VAN: ${((double.parse(montoController.text)-descuento) - VAN).toStringAsFixed(2)}'),
+              Text('VAN: ${moneda} ${((double.parse(montoController.text)-descuento) - VAN).toStringAsFixed(2)}'),
 
             ],
           ),
