@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
    int estatic = 1;
 
   String resultado = '';
-
+  double PorcentajeCOK=0;
    double VAN=0;
   List<double> tir=[];
   double tasaTIR =0.1;
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
     double flujo= 0;
     //COK
     num cok= math.pow(1+ double.parse(cokController.text)/100, 30/360) -1;
-    double PorcentajeCOK=cok.toDouble();
+     PorcentajeCOK=cok.toDouble();
     //VAN
 
     //double cuotaMensual = (montoPrestamo * tasaInteresMensual) / (1 - math.pow(1 + tasaInteresMensual, -plazoPrestamo));
@@ -222,6 +222,7 @@ class _HomePageState extends State<HomePage> {
               Text('Monto préstamo: ${montoController.text}'),
               Text('Tasa de Interés: ${tasaController.text}'),
               Text('Plazo (en años): ${plazoController.text}'),
+              Text('COK: ${(PorcentajeCOK*100).toStringAsFixed(5)}%'),
               Text('VAN: ${((double.parse(montoController.text)-descuento) - VAN).toStringAsFixed(2)}'),
 
             ],
