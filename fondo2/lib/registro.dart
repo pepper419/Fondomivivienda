@@ -29,10 +29,15 @@ class Usuario {
   });
 }
 
-@HiveType(typeId: 1)
 class UsuarioAdapter extends TypeAdapter<Usuario> {
+  static int _nextTypeId = 1; // Variable estática para el contador de typeId
+
   @override
-  final int typeId = 0;
+  final int typeId; // No se establece un valor inicial aquí
+
+  UsuarioAdapter() : typeId = _nextTypeId++ {
+    // Incrementar el contador para el próximo typeId
+  }
 
   @override
   Usuario read(BinaryReader reader) {
