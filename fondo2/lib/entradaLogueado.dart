@@ -234,7 +234,7 @@ class EntradaLogueadoScreen extends StatelessWidget {
                                 },
                               );
                             } else if (solAmount != null) {
-                              final convertedAmount = solAmount! / 3.8;
+                              final convertedAmount = solAmount! / 3.6;
                               showDialog(
                                 context: context,
                                 builder: (ctx) {
