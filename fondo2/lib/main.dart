@@ -92,7 +92,6 @@ class _HomePageState extends State<HomePage> {
   double PorcentajeCOK=0;
    double VAN=0;
   List<double> tir=[];
-  double tasaTIR =0.1;
   void calcularCronograma() {
     VAN=0;
 
@@ -104,6 +103,7 @@ class _HomePageState extends State<HomePage> {
     double tasaInteresAnual = double.parse(tasaController.text);
     descuento = double.parse(montoController.text) * double.parse(porcentajeController.text) / 100;
     double saldoesta = montoPrestamo - descuento ;
+    tir.add(-saldoesta);
     int plazoPrestamo = int.parse(plazoController.text)*12;
     double tasaInteresMensual = (tasa==1) ? (math.pow(1 + (tasaInteresAnual/100), 1/12) - 1) : (math.pow(1 + (tasaInteresAnual/100)/360, 30) - 1);
     //double tasaInteresMensual = tasaInteresAnual / 12 / 100;
@@ -206,8 +206,37 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  double calcularTIR(List<double> flujosEfectivo) {
+    double precision = 0.00001; // La precisión deseada para la aproximación de la TIR
+    double tirInicial = 0.1; // Valor inicial para la TIR (puede ser cualquier valor)
 
+    double tirActual = tirInicial;
+    double tirAnterior = 0.0;
+    double error = 1.0;
 
+    while (error > precision) {
+      double tirFuncion = 0.0;
+      double tirDerivada = 0.0;
+
+      for (int i = 0; i < tir.length; i++) {
+        tirFuncion += tir[i] / math.pow(1 + tirActual, i + 1);
+        tirDerivada -= (i + 1) * tir[i] / math.pow(1 + tirActual, i + 2);
+      }
+
+      tirAnterior = tirActual;
+      tirActual = tirActual - tirFuncion / tirDerivada;
+      error = (tirActual - tirAnterior).abs();
+    }
+
+    return tirActual*100;
+  }
+
+  double CalcularTCEA()
+  {
+    double answer;
+    answer= math.pow(1+ calcularTIR(tir)/100, 360/30) - 1;
+    return answer * 100;
+  }
   void showResumen(BuildContext context) {
     showDialog(
       context: context,
@@ -223,6 +252,8 @@ class _HomePageState extends State<HomePage> {
               Text('Plazo (en años):  ${plazoController.text}'),
               Text('COK: ${(PorcentajeCOK*100).toStringAsFixed(5)}%'),
               Text('VAN: ${moneda} ${((double.parse(montoController.text)-descuento) - VAN).toStringAsFixed(2)}'),
+              Text('TIR: ${(calcularTIR(tir)).toStringAsFixed(5)}%'),
+              Text('TCEA: ${(CalcularTCEA()).toStringAsFixed(5)}%'),
 
             ],
           ),
