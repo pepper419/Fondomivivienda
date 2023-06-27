@@ -527,52 +527,72 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              Card(
-                color: Colors.green.withOpacity(0.2),
-                child: Container(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: comisionController,
-                        decoration: InputDecoration(labelText: 'Comisión'),
+              Row(
+                children: [
+                  Expanded(
+                    child: Card(
+                      color: Colors.green.withOpacity(0.2),
+                      child: Container(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: notarialController,
+                              decoration: InputDecoration(labelText: 'Coste Notarial'),
+                            ),
+                            TextField(
+                              controller: registralController,
+                              decoration: InputDecoration(labelText: 'Coste Registrales'),
+                            ),
+                            TextField(
+                              controller: tasacionController,
+                              decoration: InputDecoration(labelText: 'tasacion'),
+                            ),
+                            TextField(
+                              controller: estudioController,
+                              decoration: InputDecoration(labelText: 'Comisiones de Estudio'),
+                            ),
+                            TextField(
+                              controller: activacionController,
+                              decoration: InputDecoration(labelText: 'Comisiones de Activacion'),
+                            ),
+                          ],
+                        ),
                       ),
-                      TextField(
-                        controller: portesController,
-                        decoration: InputDecoration(labelText: 'Portes'),
-                      ),
-                      TextField(
-                        controller: gastosadmiController,
-                        decoration: InputDecoration(labelText: 'Gastos administrativos'),
-                      ),
-                      TextField(
-                        controller: notarialController,
-                        decoration: InputDecoration(labelText: 'Coste Notarial'),
-                      ),
-                      TextField(
-                        controller: registralController,
-                        decoration: InputDecoration(labelText: 'Coste Registrales'),
-                      ),
-                      TextField(
-                        controller: tasacionController ,
-                        decoration: InputDecoration(labelText: 'tasacion'),
-                      ),
-                      TextField(
-                        controller: estudioController,
-                        decoration: InputDecoration(labelText: 'Comisiones de Estudio'),
-                      ),
-                      TextField(
-                        controller: activacionController,
-                        decoration: InputDecoration(labelText: 'Comisiones de Activacion'),
-                      ),
-                      TextField(
-                        controller: cokController,
-                        decoration: InputDecoration(labelText: '%COK',
-                          suffixText: '%'),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  Expanded(
+                    child: Card(
+                      color: Colors.green.withOpacity(0.2),
+                      child: Container(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            TextField(
+                              controller: comisionController,
+                              decoration: InputDecoration(labelText: 'Comisión'),
+                            ),
+                            TextField(
+                              controller: portesController,
+                              decoration: InputDecoration(labelText: 'Portes'),
+                            ),
+                            TextField(
+                              controller: gastosadmiController,
+                              decoration: InputDecoration(labelText: 'Gastos administrativos'),
+                            ),
+                            TextField(
+                              controller: cokController,
+                              decoration: InputDecoration(
+                                labelText: '%COK',
+                                suffixText: '%',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 20.0),
               Row(
