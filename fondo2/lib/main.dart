@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController cokController = TextEditingController();
 
   double descuento = 0.0;
-
+  double montoPrestamo=0.0;
   List<DataRow> pagosRows = [];
    int estatic = 1;
 
@@ -94,37 +94,69 @@ class _HomePageState extends State<HomePage> {
   List<double> tir=[];
   void calcularCronograma() {
     VAN=0;
-
+    tir=[];
     //Es el periodo en el que se estan calculando las cuotas y va aumentando para recorrer todo el plazo de pagos
     estatic = 1;
     // Cálculos del cronograma de pagos utilizando el método francés
-    double v = 0.0;
-    double montoPrestamo = double.parse(montoController.text);
+    //MONTO
+    montoPrestamo = double.parse(montoController.text);
+    if(montoPrestamo <0)
+      montoPrestamo*=-1;
+    //TEA
     double tasaInteresAnual = double.parse(tasaController.text);
-    descuento = double.parse(montoController.text) * double.parse(porcentajeController.text) / 100;
-    double saldoesta = montoPrestamo - descuento ;
-    tir.add(-saldoesta);
+    if(tasaInteresAnual <0)
+      tasaInteresAnual*=-1;
+    //DESCUENTO
+    double porcentajeMonto=double.parse(porcentajeController.text);
+    if(porcentajeMonto <0)
+      porcentajeMonto*=-1;
+    descuento = montoPrestamo * porcentajeMonto / 100;
+    //PRESTAMO
+    double Prestamo = montoPrestamo - descuento ;
+    //PRIMER valor del TIR
+    tir.add(-Prestamo);
+    //Cantidad de años
     int plazoPrestamo = int.parse(plazoController.text)*12;
+    if(plazoPrestamo <0)
+      plazoPrestamo*=-1;
+    //Conversion dependiendo de la tasa que se escoja Nominal o Efectiva
     double tasaInteresMensual = (tasa==1) ? (math.pow(1 + (tasaInteresAnual/100), 1/12) - 1) : (math.pow(1 + (tasaInteresAnual/100)/360, 30) - 1);
     //double tasaInteresMensual = tasaInteresAnual / 12 / 100;
     double saldo = 0.0;
     //saldo inicial
     double Saldo_inicial=montoPrestamo - descuento ;
-    saldo = saldoesta;
+    //Saldo Final
+    saldo = Prestamo;
     //SEGURO DE DESGRAVAMEN
     double Seg_Des = double.parse(desgravamenController.text)/100;
+    if(Seg_Des <0)
+      Seg_Des*=-1;
     //Seguro de riesgo
-    double seg_riesgo= (double.parse(seguro_riesgoController.text)/100)* double.parse(montoController.text)/12 ;
+    double datoSegRiesgo=double.parse(seguro_riesgoController.text);
+
+    if(datoSegRiesgo <0)
+      datoSegRiesgo*=-1;
+
+    double seg_riesgo= (datoSegRiesgo/100)* montoPrestamo/12 ;
     //Comision
     double comision= double.parse(comisionController.text);
+    if(comision <0)
+      comision*=-1;
     //Portes
     double portes= double.parse(portesController.text);
+    if(portes <0)
+      portes*=-1;
     //Gatos administrativos
     double gastos_admi= double.parse(gastosadmiController.text);
+    if(gastos_admi <0)
+      gastos_admi*=-1;
     //FLUJO
     double flujo= 0;
     //COK
-    num cok= math.pow(1+ double.parse(cokController.text)/100, 30/360) -1;
+    double porcentajecok=double.parse(cokController.text);
+    if(porcentajecok <0)
+      porcentajecok*=-1;
+    num cok= math.pow(1+ porcentajecok/100, 30/360) -1;
      PorcentajeCOK=cok.toDouble();
     //VAN
 
@@ -134,12 +166,8 @@ class _HomePageState extends State<HomePage> {
     double cuotaMensual=0;
     //Cantidada de plazos de gracia
     int plazo = int.parse(plazo2Controller.text);
-    //CALCULO DE TIR
-
-
-
-
-
+    if(plazo <0)
+      plazo*=-1;
     pagosRows.clear();
 
 
@@ -152,17 +180,17 @@ class _HomePageState extends State<HomePage> {
       //CUOTA MENSUAL
       if(top==1)
       {
-         cuotaMensual = plazo > i ? 0.0 : saldoesta * (((tasaInteresMensual+Seg_Des)*math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo- estatic +1)) /
+         cuotaMensual = plazo > i ? 0.0 : Prestamo * (((tasaInteresMensual+Seg_Des)*math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo- estatic +1)) /
             (math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo - estatic +1 )-1));
       }
       else
-        cuotaMensual = plazo > i ? intereses : saldoesta * (((tasaInteresMensual+Seg_Des)*math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo- estatic +1)) /
+        cuotaMensual = plazo > i ? intereses : Prestamo * (((tasaInteresMensual+Seg_Des)*math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo- estatic +1)) /
             (math.pow(1+tasaInteresMensual+Seg_Des,plazoPrestamo - estatic +1 )-1));
 
       //AMORTIZACION
       double amortizacion =  cuotaMensual - intereses ;
       if (i < plazo) {
-        saldoesta -= amortizacion ;
+        Prestamo -= amortizacion ;
         estatic++;
       }
       //GASTOS
@@ -207,8 +235,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   double calcularTIR(List<double> flujosEfectivo) {
-    double precision = 0.00001; // La precisión deseada para la aproximación de la TIR
-    double tirInicial = 0.1; // Valor inicial para la TIR (puede ser cualquier valor)
+    double precision = 0.00001;
+    double tirInicial = 0.1;
 
     double tirActual = tirInicial;
     double tirAnterior = 0.0;
@@ -216,15 +244,15 @@ class _HomePageState extends State<HomePage> {
 
     while (error > precision) {
       double tirFuncion = 0.0;
-      double tirDerivada = 0.0;
+      double tirD = 0.0;
 
       for (int i = 0; i < tir.length; i++) {
         tirFuncion += tir[i] / math.pow(1 + tirActual, i + 1);
-        tirDerivada -= (i + 1) * tir[i] / math.pow(1 + tirActual, i + 2);
+        tirD -= (i + 1) * tir[i] / math.pow(1 + tirActual, i + 2);
       }
 
       tirAnterior = tirActual;
-      tirActual = tirActual - tirFuncion / tirDerivada;
+      tirActual = tirActual - tirFuncion / tirD;
       error = (tirActual - tirAnterior).abs();
     }
 
@@ -237,6 +265,7 @@ class _HomePageState extends State<HomePage> {
     answer= math.pow(1+ calcularTIR(tir)/100, 360/30) - 1;
     return answer * 100;
   }
+
   void showResumen(BuildContext context) {
     showDialog(
       context: context,
@@ -251,7 +280,7 @@ class _HomePageState extends State<HomePage> {
               Text('Tasa de Interés:  ${tasaController.text}%'),
               Text('Plazo (en años):  ${plazoController.text}'),
               Text('COK: ${(PorcentajeCOK*100).toStringAsFixed(5)}%'),
-              Text('VAN: ${moneda} ${((double.parse(montoController.text)-descuento) - VAN).toStringAsFixed(2)}'),
+              Text('VAN: ${moneda} ${((montoPrestamo-descuento) - VAN).toStringAsFixed(2)}'),
               Text('TIR: ${(calcularTIR(tir)).toStringAsFixed(5)}%'),
               Text('TCEA: ${(CalcularTCEA()).toStringAsFixed(5)}%'),
 
@@ -381,7 +410,9 @@ class _HomePageState extends State<HomePage> {
                             ],
                             TextField(
                               controller: porcentajeController,
-                              decoration: InputDecoration(labelText: 'Porcentaje de cuota inicial'),
+                              decoration: InputDecoration(labelText: 'Porcentaje de cuota inicial',
+                                suffixText: '%'),
+
                             ),
                             Row(
                               children: [
@@ -424,6 +455,7 @@ class _HomePageState extends State<HomePage> {
                                         return DropdownMenuItem<String>(
                                           value: value,
                                           child: Text(value),
+
                                         );
                                       }).toList(),
                                     ),
@@ -433,6 +465,7 @@ class _HomePageState extends State<HomePage> {
                                   controller: tasaController,
                                   decoration: InputDecoration(
                                     labelText: 'Tasa de interés $_selectedTasa',
+                                    suffixText: '%',
                                   ),
                                 ),
                               ],
@@ -469,11 +502,13 @@ class _HomePageState extends State<HomePage> {
                             ),
                             TextField(
                               controller: desgravamenController,
-                              decoration: InputDecoration(labelText: 'Porcentaje de Seguro desgravamen'),
+                              decoration: InputDecoration(labelText: 'Porcentaje de Seguro desgravamen',
+                                suffixText: '%'),
                             ),
                             TextField(
                               controller: seguro_riesgoController,
-                              decoration: InputDecoration(labelText: 'Porcentaje de Seguro de riesgo'),
+                              decoration: InputDecoration(labelText: 'Porcentaje de Seguro de riesgo',
+                                suffixText: '%'),
                             ),
                           ],
                         ),
@@ -502,7 +537,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       TextField(
                         controller: cokController,
-                        decoration: InputDecoration(labelText: '%COK'),
+                        decoration: InputDecoration(labelText: '%COK',
+                          suffixText: '%'),
                       ),
                     ],
                   ),
