@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'entradaLogueado.dart';
@@ -207,6 +208,10 @@ class _RegistroScreenState extends State<RegistroScreen> {
                             child: TextFormField(
                               controller: _rucController,
                               decoration: InputDecoration(labelText: 'RUC'),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), // Solo permite números
+                                LengthLimitingTextInputFormatter(13), // Limita la longitud a 13 caracteres
+                              ],
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Ingrese su RUC';
@@ -220,6 +225,10 @@ class _RegistroScreenState extends State<RegistroScreen> {
                             child: TextFormField(
                               controller: _dniController,
                               decoration: InputDecoration(labelText: 'DNI'),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), // Solo permite números
+                                LengthLimitingTextInputFormatter(8), // Limita la longitud a 13 caracteres
+                              ],
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Ingrese su DNI';
@@ -233,6 +242,10 @@ class _RegistroScreenState extends State<RegistroScreen> {
                             child: TextFormField(
                               controller: _telefonoController,
                               decoration: InputDecoration(labelText: 'Teléfono'),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')), // Solo permite números
+                                LengthLimitingTextInputFormatter(9), // Limita la longitud a 13 caracteres
+                              ],
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Ingrese su teléfono';
