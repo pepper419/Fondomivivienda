@@ -93,6 +93,7 @@ class _HomePageState extends State<HomePage> {
   List<DataRow> pagosRows = [];
    int estatic = 1;
   double Prestamo=0.0;
+  double Prestamo2=0.0;
   String resultado = '';
   double PorcentajeCOK=0;
    double VAN=0;
@@ -123,6 +124,8 @@ class _HomePageState extends State<HomePage> {
     descuento = montoPrestamo * porcentajeMonto / 100;
     //PRESTAMO
      Prestamo = montoPrestamo - descuento + CostNotarial + CostRegistrales + Tasacion + ComisionActivacion + ComisionEstudio;
+     Prestamo2 = montoPrestamo - descuento + CostNotarial + CostRegistrales + Tasacion + ComisionActivacion + ComisionEstudio;
+
     //PRIMER valor del TIR
     tir.add(-Prestamo);
     //Cantidad de años
@@ -290,7 +293,7 @@ class _HomePageState extends State<HomePage> {
               Text('Tasa de Interés:  ${tasaController.text}%'),
               Text('Plazo (en años):  ${plazoController.text}'),
               Text('COK: ${(PorcentajeCOK*100).toStringAsFixed(5)}%'),
-              Text('VAN: ${moneda} ${(( Prestamo) - VAN).toStringAsFixed(2)}'),
+              Text('VAN: ${moneda} ${( Prestamo2- VAN).toStringAsFixed(2)}'),
               Text('TIR: ${(calcularTIR(tir)).toStringAsFixed(5)}%'),
               Text('TCEA: ${(CalcularTCEA()).toStringAsFixed(5)}%'),
 
