@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
   void calcularCronograma() {
     VAN=0;
     tir=[];
-    //Es el periodo en el que se estan calculando las cuotas y va aumentando para recorrer todo el plazo de pagos
+    //Es el periodo actual en el que se estan calculando las cuotas y va aumentando para recorrer todo el plazo de pagos
     estatic = 1;
     // Cálculos del cronograma de pagos utilizando el método francés
     //MONTO
