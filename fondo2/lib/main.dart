@@ -82,6 +82,11 @@ class _HomePageState extends State<HomePage> {
   final TextEditingController portesController = TextEditingController();
   final TextEditingController gastosadmiController = TextEditingController();
   final TextEditingController cokController = TextEditingController();
+  final TextEditingController tasacionController = TextEditingController();
+  final TextEditingController notarialController = TextEditingController();
+  final TextEditingController registralController = TextEditingController();
+  final TextEditingController estudioController = TextEditingController();
+  final TextEditingController activacionController = TextEditingController();
 
   double descuento = 0.0;
   double montoPrestamo=0.0;
@@ -534,6 +539,26 @@ class _HomePageState extends State<HomePage> {
                       TextField(
                         controller: gastosadmiController,
                         decoration: InputDecoration(labelText: 'Gastos administrativos'),
+                      ),
+                      TextField(
+                        controller: notarialController,
+                        decoration: InputDecoration(labelText: 'Coste Notarial'),
+                      ),
+                      TextField(
+                        controller: registralController,
+                        decoration: InputDecoration(labelText: 'Coste Registrales'),
+                      ),
+                      TextField(
+                        controller: tasacionController ,
+                        decoration: InputDecoration(labelText: 'tasacion'),
+                      ),
+                      TextField(
+                        controller: estudioController,
+                        decoration: InputDecoration(labelText: 'Comisiones de Estudio'),
+                      ),
+                      TextField(
+                        controller: activacionController,
+                        decoration: InputDecoration(labelText: 'Comisiones de Activacion'),
                       ),
                       TextField(
                         controller: cokController,

@@ -103,7 +103,7 @@ class _RegistroScreenState extends State<RegistroScreen> {
       await box.close();
     } catch (e) {
       print('Error al abrir o cerrar la caja de Hive: $e');
-      // Puedes mostrar una notificación o un diálogo de error aquí si lo deseas
+
       return;
     }
 
