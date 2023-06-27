@@ -92,12 +92,17 @@ class _HomePageState extends State<HomePage> {
   double montoPrestamo=0.0;
   List<DataRow> pagosRows = [];
    int estatic = 1;
-
+  double Prestamo=0.0;
   String resultado = '';
   double PorcentajeCOK=0;
    double VAN=0;
   List<double> tir=[];
   void calcularCronograma() {
+    double CostNotarial= double.parse(notarialController.text);
+    double CostRegistrales=double.parse(registralController.text);
+    double Tasacion=double.parse(tasacionController.text);
+    double ComisionEstudio=double.parse(estudioController.text);
+    double ComisionActivacion=double.parse(activacionController.text);
     VAN=0;
     tir=[];
     //Es el periodo actual en el que se estan calculando las cuotas y va aumentando para recorrer todo el plazo de pagos
@@ -117,7 +122,7 @@ class _HomePageState extends State<HomePage> {
       porcentajeMonto*=-1;
     descuento = montoPrestamo * porcentajeMonto / 100;
     //PRESTAMO
-    double Prestamo = montoPrestamo - descuento ;
+     Prestamo = montoPrestamo - descuento + CostNotarial + CostRegistrales + Tasacion + ComisionActivacion + ComisionEstudio;
     //PRIMER valor del TIR
     tir.add(-Prestamo);
     //Cantidad de años
@@ -285,7 +290,7 @@ class _HomePageState extends State<HomePage> {
               Text('Tasa de Interés:  ${tasaController.text}%'),
               Text('Plazo (en años):  ${plazoController.text}'),
               Text('COK: ${(PorcentajeCOK*100).toStringAsFixed(5)}%'),
-              Text('VAN: ${moneda} ${((montoPrestamo-descuento) - VAN).toStringAsFixed(2)}'),
+              Text('VAN: ${moneda} ${(( Prestamo) - VAN).toStringAsFixed(2)}'),
               Text('TIR: ${(calcularTIR(tir)).toStringAsFixed(5)}%'),
               Text('TCEA: ${(CalcularTCEA()).toStringAsFixed(5)}%'),
 
